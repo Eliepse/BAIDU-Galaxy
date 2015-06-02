@@ -4,12 +4,14 @@
 	z-index: 1000;
 	
 	background-color: rgba(0, 0, 0, 0.2);
-	color: #fff;
+	color: rgba(255,255,255, 0.7);
 	font-family: sans-serif;
-	font-size: 10px;
+	font-size: 11px;
+	line-height: 12px;
 	padding: 10px;
 	
 }
+
 #solar_system_table {
 	
 	position: relative;
@@ -21,5 +23,47 @@ html, body {
 	
 	width: 100%;
 	height: 100%;
+	
+}
+
+body {
+	
+	background-image: url(../img/background-md.jpg);
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+	
+}
+
+#solar {
+	
+	position: absolute;
+	
+	width: 150px;
+	height: 150px;
+	
+	margin: auto;
+	
+	background-position: center;
+	background-size: cover;
+	
+	display: none;
+	
+}
+
+#solar_system_table td {
+	
+	vertical-align: middle;
+	
+}
+
+#solar_system {
+	
+	position: relative;
+	
+	height: 100%;
+	width: 100%;
+	
+	overflow: visible;
 	
 }
