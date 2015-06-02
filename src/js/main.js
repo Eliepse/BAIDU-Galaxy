@@ -3,6 +3,71 @@
 */
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
+function Iterator(arrayMap) {
+	
+	'use strict';
+	
+	var values = [],
+		i = 0,
+		length,
+		key;
+	
+	function Entry(key, value) {
+
+		this.key = key;
+		this.value = value;
+
+	}
+	
+	for (key in arrayMap) {
+
+		if (arrayMap.hasOwnProperty(key)) {
+			values.push(new Entry(key, arrayMap[key]));
+		}
+	}
+
+	length = values.length;
+
+	this.next = function () {
+
+
+		if (i < length) {
+
+			var val = values[i];
+			i += 1;
+			return val;
+
+		} else {
+
+			return false;
+
+		}
+
+	};
+
+	this.previous = function () {
+
+		if (i > 0) {
+
+			i -= 1;
+			return values[i];
+
+		} else {
+
+			return false;
+
+		}
+
+	};
+
+	this.reset = function () {
+
+		i = 0;
+
+	};
+
+}
+
 function HUD() {
 	
 	'use strict';
@@ -179,7 +244,19 @@ $(function () {
 	
 	function Planet() {}
 	
-	function Dimension() {}
+	function Dimension() {
+		
+		var $this,
+			position = { x : 0, y : 0 },
+			offset = { x : 0, y : 0 },
+			defaultSize = 150,
+			size = 150,
+			planets = {};
+		
+		
+		
+		
+	}
 	
 	function SolarSystem() {
 		
