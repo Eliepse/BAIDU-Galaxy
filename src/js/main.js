@@ -1,21 +1,23 @@
-var DEBUG = {
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+function HUD() {
 	
-	printDebug : false,
+	this.printDebug = false;
 	
-	title : {
+	this.title = {
 
 		title : "",
 
 		fix : "",
 
-		set : function(str) {
+		set : function (str) {
 
 			this.title = str;
 			document.title = str;
 
 		},
 
-		update : function(object) {
+		update : function (object) {
 
 			document.title = this.title.replace("{value}", object);
 
@@ -27,60 +29,125 @@ var DEBUG = {
 
 		}
 
-	},
+	};
 	
-	infos : {
+	this.infos = {
 		
 		objects : {},
 		
-		log : function(prop, val, attr) {
+		log : function (prop, val, attr) {
 			
-			if(!this.printDebug) return;
-				console.log("go one");
+			if (!printDebug) return;
 			
-			if(objects.hasOwnProperty(prop)) {
-				this.infos.objects[prop].innerHTML = val;
-				console.log("yes");
+			if(this.objects.hasOwnProperty(prop)) {
+				
+				this.objects[prop].innerHTML = prop + ' : ' + val + attr;
 			
 			} else {
 				
-				console.log("no");
-				this.infos.objects[prop] = {html:"", attr:""};
-				this.infos.objects[prop].html = document.createElement("li");
-				this.infos.objects[prop].html.id = prop;
-				document.getElementById("debug").appendChild(this.infos.objects[prop].html);
-				this.infos.objects[prop].innerHTML = prop + ' : ' + val + (this.infos.objects[prop].attr != "") ? this.infos.objects[prop].attr : "";
+				this.objects[prop] = {html:"", attr:""};
+				this.objects[prop].html = document.createElement("li");
+				this.objects[prop].html.id = prop;
+				document.getElementById("debug").appendChild(this.objects[prop].html);
+				this.objects[prop] = document.getElementById(prop);
+				this.objects[prop].innerHTML = prop + ' : ' + val + attr;
 				
 			}
 			
 		}
 		
-	},
+	};
 	
-	showDebug : function() {
+	this.showDebug = function () {
 		
-		this.printDebug = true;
+		printDebug = true;
 		document.getElementById("debug").style.display = "block";
 		
-	},
+	};
 	
-	hideDebug : function() {
+	this.hideDebug = function () {
 		
-		this.printDebug = false;
+		printDebug = false;
 		document.getElementById("debug").style.display = "none";
 		
+	};
+
+}
+
+function GPU() {
+	
+	
+	
+	var frameCount = 0,
+		fps = 40,
+		now,
+		then = Date.now(),
+		interval = 1000/fps,
+		delta;
+	
+	var speed = 1,
+		isPause = false;
+	
+	this.draw = function(foo) {draw = foo;};
+	var draw = function(){};
+	
+	function compute (parent) {
+		
+		if(isPause) return;
+			
+		requestAnimationFrame(compute);
+
+		now = Date.now();
+		delta = now - then;
+
+		if (delta > interval) {
+
+			then = now - (delta % interval);
+
+			frameCount++;
+			draw();
+
+		}
+			
 	}
+	
+	this.getFrameCount = function() { return frameCount; };
+	
+	this.play = function() {
+		
+		isPause = false;
+		requestAnimationFrame(compute);
+		
+	};
+	
+	this.pause = function() {
+		
+		isPause = true;
+		
+	}
+		
+	
+}
 
-};
+window.HUD = new HUD();
+window.GPU = new GPU();
 
-DEBUG.showDebug();
-DEBUG.infos.log("show_debug", true, "");
-DEBUG.title.fix = "Baidu Galaxy";
+HUD.showDebug();
+
+HUD.title.fix = "@ Baidu Galaxy @";
 
 $(function() {
 	
+	HUD.title.reset();
 	
-	DEBUG.title.reset();
+	GPU.draw(function () {
+		
+		HUD.infos.log("frameCount", GPU.getFrameCount(), "");
+		
+	});
 	
+	GPU.play();
+	
+	setTimeout(GPU.pause, 2000);
 	
 });
