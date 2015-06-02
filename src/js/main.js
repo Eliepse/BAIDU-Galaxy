@@ -1,8 +1,13 @@
+/*global
+	requestAnimationFrame, $
+*/
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 function HUD() {
 	
-	this.printDebug = false;
+	'use strict';
+	
+	var printDebug = false;
 	
 	this.title = {
 
@@ -37,20 +42,31 @@ function HUD() {
 		
 		log : function (prop, val, attr) {
 			
-			if (!printDebug) return;
+			if (!printDebug) { return; }
 			
-			if(this.objects.hasOwnProperty(prop)) {
+			if (this.objects.hasOwnProperty(prop)) {
 				
-				this.objects[prop].innerHTML = prop + ' : ' + val + attr;
+				this.objects[prop].innerHTML = prop + ' : ' + val + this.objects[prop].attr;
+				
+				if (attr === undefined) {
+					this.objects[prop].attr = "";
+				} else {
+					this.objects[prop].attr = attr;
+				}
 			
 			} else {
 				
-				this.objects[prop] = {html:"", attr:""};
+				this.objects[prop] = {html : "", attr : ""};
 				this.objects[prop].html = document.createElement("li");
 				this.objects[prop].html.id = prop;
 				document.getElementById("debug").appendChild(this.objects[prop].html);
 				this.objects[prop] = document.getElementById(prop);
-				this.objects[prop].innerHTML = prop + ' : ' + val + attr;
+				if (attr === undefined) {
+					this.objects[prop].attr = "";
+				} else {
+					this.objects[prop].attr = attr;
+				}
+				this.objects[prop].innerHTML = prop + ' : ' + val + this.objects[prop].attr;
 				
 			}
 			
@@ -76,25 +92,27 @@ function HUD() {
 
 function GPU() {
 	
-	
+	'use strict';
 	
 	var frameCount = 0,
 		fps = 40,
 		now,
 		then = Date.now(),
-		interval = 1000/fps,
-		delta;
-	
-	var speed = 1,
-		isPause = false;
-	
-	this.draw = function(foo) {draw = foo;};
-	var draw = function(){};
-	
-	function compute (parent) {
+		interval = 1000 / fps,
+		delta,
 		
-		if(isPause) return;
+		speed = 1,
+		isPause = false,
+		
+		draw = function () {};
+	
+	this.draw = function (foo) { draw = foo; };
+	
+	function compute(parent) {
+		
+		if (isPause) { return; }
 			
+		//JSLint @
 		requestAnimationFrame(compute);
 
 		now = Date.now();
@@ -104,50 +122,88 @@ function GPU() {
 
 			then = now - (delta % interval);
 
-			frameCount++;
+			frameCount += 1;
 			draw();
 
 		}
 			
 	}
 	
-	this.getFrameCount = function() { return frameCount; };
+	this.getFrameCount = function () { return frameCount; };
 	
-	this.play = function() {
+	this.play = function () {
 		
 		isPause = false;
+		HUD.infos.log("GPU", "play");
 		requestAnimationFrame(compute);
 		
 	};
 	
-	this.pause = function() {
+	this.pause = function () {
 		
 		isPause = true;
+		HUD.infos.log("GPU", "pause");
 		
-	}
+	};
 		
 	
 }
 
 window.HUD = new HUD();
-window.GPU = new GPU();
+var GPU = new GPU();
 
 HUD.showDebug();
+HUD.infos.log("frameCount", 0);
+HUD.infos.log("GPU", "pause");
 
 HUD.title.fix = "@ Baidu Galaxy @";
 
-$(function() {
+$(function () {
 	
-	HUD.title.reset();
+	'use strict';
+	
+	
+	
+	function Planet() {}
+	
+	function Dimension() {}
+	
+	function SolarSystem() {}
+	
+	function Solar() {}
+	
+	
+	
+	/* 
+	 *	DRAW FUNCTION
+	*/
 	
 	GPU.draw(function () {
 		
-		HUD.infos.log("frameCount", GPU.getFrameCount(), "");
+		HUD.infos.log("frameCount", GPU.getFrameCount());
 		
 	});
 	
-	GPU.play();
 	
-	setTimeout(GPU.pause, 2000);
+	HUD.title.reset();
+	
+	
+	
+	
+	
+	$(document).on("keydown", function () {
+		
+		GPU.play();
+		
+	});
+	
+	$(document).on("keyup", function () {
+		
+		GPU.pause();
+		
+	});
+	
+	
+	
 	
 });
