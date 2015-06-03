@@ -419,6 +419,9 @@ $(function () {
 					rotation.speed = data.rotationSpeed;
 					rotation.direction = data.rotationDirection;
 					
+					// THIS IS FOR THE FUN
+					$this.css("background-image", "url(" + data.bckg + ")").css("background-repeat", "no-repeat").css("background-position", "middle");
+					
 					$this.css("animation-duration", rotation.speed + "s");
 					
 					if(callback !== undefined) {

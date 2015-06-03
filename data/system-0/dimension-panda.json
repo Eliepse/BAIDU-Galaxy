@@ -1,9 +1,10 @@
 {
 	
-	"rotationSpeed" : 40,
+	"rotationSpeed" : 60,
 	"rotationDirection": 1,
 	"radius" : 50,
 	"layer" : 1,
+	"bckg" : "src/img/b.png",
 	
 	"planets" : [
 		
