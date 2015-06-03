@@ -1,4 +1,4 @@
-#debug {
+#debug, #log {
 	
 	position: fixed;
 	z-index: 1000;
@@ -65,5 +65,22 @@ body {
 	width: 100%;
 	
 	overflow: visible;
+	
+}
+
+.dimension {
+	
+	position: absolute;
+	width: 750px;
+	height: 750px;
+	border: 1px solid #fff;
+	
+}
+
+#log {
+	
+	right: 0px; top: 0px;
+	width: 250px;
+	height: 150px;
 	
 }
