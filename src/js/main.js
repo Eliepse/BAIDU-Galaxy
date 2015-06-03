@@ -470,12 +470,20 @@ $(function () {
 		
 	}
 	
+	
+	
+	
+	
+	
 	function Dimension(dName) {
 		
-		var $this = $(dName),
+		var $this = $("#" + dName),
 			radius = 50,
 			layer = 1,
 			planets = {};
+		
+//		$this.addClass("clockRotation");
+//		$this.css("animation-duration", "10s");
 		
 		function initiate() {}
 		
@@ -498,6 +506,11 @@ $(function () {
 		this.init = initiate;
 		
 	}
+	
+	
+	
+	
+	
 	
 	function Solar() {
 		
