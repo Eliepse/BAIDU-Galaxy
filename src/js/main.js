@@ -366,12 +366,8 @@ $(function () {
 		this.getSize = function () { return size; };
 		this.getScaleFactor = function () { return scaleFactor; };
 		this.getName = function () { return name; };
+		this.getDimensions = function () { return dimensions; };
 		
-		this.loadChildren = function () {
-			
-			dimensions.fetchChildren();
-			
-		};
 		this.updateSize = updateSize;
 		this.updateChildren = updateChildren;
 		
@@ -548,11 +544,12 @@ $(function () {
 			
 		};
 		
-		this.fetchChildren = function () {
+		this.fetchChildren = function (callback) {
 			
 			for( var i = 0; i < objects.length; i++) {
 				
-				objects[i].fetchData();
+				if (i == objects.length - 1 && callback !== undefined) objects[i].fetchData(callback);
+				else objects[i].fetchData();
 				
 			}
 			
@@ -565,6 +562,12 @@ $(function () {
 			
 			position = center;
 			updatePosition();
+			
+		};
+		
+		this.playAll = function () {
+			
+				objects[i].play();
 			
 		};
 		
@@ -683,7 +686,11 @@ $(function () {
 	
 	solarSystem.init(function () {
 		
-		solarSystem.loadChildren();
+		solarSystem.getDimensions().fetchChildren(function () {
+			
+			solarSystem.getDimensions().playAll();
+			
+		});
 		solarSystem.updateChildren();
 		solar.fadeIn();
 		HUD.title.reset();
