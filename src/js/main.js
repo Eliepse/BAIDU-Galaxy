@@ -567,6 +567,7 @@ $(function () {
 		
 		this.playAll = function () {
 			
+			for( var i = 0; i < objects.length; i++)
 				objects[i].play();
 			
 		};
