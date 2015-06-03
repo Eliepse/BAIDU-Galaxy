@@ -74,6 +74,8 @@ body {
 	width: 750px;
 	height: 750px;
 	
+	overflow: show;
+	
 }
 
 #log {
@@ -95,6 +97,7 @@ body {
 	height: 100%;
 	background: rgba(255,255,255,0.1);
 	
+	
 }
 
 #tLog {
@@ -102,5 +105,30 @@ body {
 	font-style: italic;
 	margin-top: 5px;
 	margin-bottom: 10px;
+	
+}
+
+/* ANIMATION ZONE */
+@keyframes revolution {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.clockRotation {
+	
+	animation-name: revolution;
+	animation-direction: normal;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	
+	
+}
+
+.aclockRotation {
+	
+	animation-name: revolution;
+	animation-direction: reverse;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
 	
 }
