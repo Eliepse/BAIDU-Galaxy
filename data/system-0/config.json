@@ -1,8 +1,8 @@
 {
 	
-	name: "system-0",
+	"name" : "system-0",
 	
-	dimensions: [
+	"dimensions" : [
 		
 		"dimension-0"
 		

@@ -1,25 +1,25 @@
 {
 	
-	radius : 50,
-	layer : 1,
+	"radius" : 50,
+	"layer" : 1,
 	
-	planets : [
+	"planets" : [
 		
 		{
-			name: "alpha",
-			angle: 0,
-			content: {
-				title: "alpha",
-				description: "desc"
+			"name": "alpha",
+			"angle": 0,
+			"content": {
+				"title": "alpha",
+				"description": "desc"
 			}
 		},
 		
 		{
-			name: "beta",
-			angle: 180,
-			content: {
-				title: "beta",
-				description: "desc"
+			"name": "beta",
+			"angle": 180,
+			"content": {
+				"title": "beta",
+				"description": "desc"
 			}
 		}
 		
