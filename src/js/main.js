@@ -75,7 +75,8 @@ function HUD() {
 	
 	'use strict';
 	
-	var printDebug = false;
+	var printDebug = false,
+		logIterator = 0;
 	
 	this.title = {
 
@@ -138,7 +139,7 @@ function HUD() {
 				
 			}
 			
-		},
+		}
 		
 	};
 			
@@ -146,6 +147,23 @@ function HUD() {
 
 		document.getElementById("tLog").innerHTML = val;
 
+	};
+	
+	
+	this.log = function (val) {
+		
+		var p = document.createElement("p");
+		p.innerHTML = "<p>" + val + "</p>";
+		document.getElementById("logs").appendChild(p);
+		
+//		document.getElementById("log-" + logIterator).innerHTML = val;
+		
+//		if(logIterator > 5) {
+//			
+//			logIterator = 0;
+//			
+//		}
+		
 	};
 	
 	this.showDebug = function () {
@@ -239,6 +257,7 @@ function isBlacklistedKey(key) {
 
 var HUD = new HUD();
 var GPU = new GPU();
+
 var window_reference = { x : 1440, y : 900 };
 window_reference.diagonal = Math.sqrt(Math.pow(window_reference.x, 2) + Math.pow(window_reference.y, 2));
 
@@ -262,14 +281,16 @@ $(function () {
 	function Planet() {}
 	
 	
-	function SolarSystem() {
+	function SolarSystem(dName) {
 		
 		var $this = $('#solar_system'),
+			dirName = dName,
+			name = "Data not fetched",
 			size = { x : 0, y : 0 },
 			center = { x : 0, y : 0 },
 			diagonal = 0,
 			scaleFactor = 1,
-			dimensions = [];
+			dimensions = new DimensionsInterface();
 		
 		function updateSize() {
 			
@@ -284,32 +305,54 @@ $(function () {
 			
 			HUD.infos.log("size", size.x + 'x ' + size.y + 'y');
 			HUD.infos.log("center", center.x + 'x ' + center.y + 'y');
-			HUD.infos.log("scaleFactor", scaleFactor, 'px');
+			HUD.infos.log("scaleFactor", scaleFactor.toFixed(3), 'px');
 			
 		}
 		
 		function initiate() {
 			
 			updateSize();
+			dimensions.init(this);
+			fetchData();
+			
+		}
+		
+		function fetchData() {
+			
+			HUD.tLog("loading solarSystem data");
+			
+			$.ajax({
+				
+				type: "GET",
+				url: "data/" + dirName + "/config.json",
+				dataType: "JSON",
+				error : function (e, f, g) {
+					
+					console.log(g);
+					HUD.log("solarSystem loadingdata : " + f);
+					
+				},
+				success: function (data) {
+					
+					HUD.log("Data of solarSystem loaded");
+					
+					name = data.name;
+					dimensions.addDimensions(data.dimensions);
+					
+				}
+				
+			});
 			
 		}
 		
 		function updateChildren() {
 			
-			solar.setPosition(center.x, center.y);
-			solar.setSize(solar.getDefaultSize() * scaleFactor);
-			
-			for (var i=0; i<dimensions.length;i++) {
-				
-				var dim = dimensions[i];
-				dim.setPosition(center.x, center.y);
-				dim.setSize(dim.getDefaultSize() * scaleFactor);
-				
-			}
+			solar.resizeEvent(center, scaleFactor);
+			dimensions.resizeEvent(center, scaleFactor);
 			
 		}
 		
-		this.addDimension = function () {
+		/*this.addDimension = function () {
 			
 			var i = dimensions.length;
 			$this.append('<div class="dimension" id="dimension-' + i + '"></div>');
@@ -320,7 +363,7 @@ $(function () {
 				
 			});
 			
-		};
+		};*/
 		
 		this.getCenter = function () { return center; };
 		this.getSize = function () { return size; };
@@ -333,14 +376,14 @@ $(function () {
 		
 	}
 	
-	function Dimension(id) {
+	function DimensionsInterface() {
 		
-		var $this = $('#dimension-' + id),
+		var $this = $('#dimensions'),
 			position = { x : 0, y : 0 },
 			offset = { x : 0, y : 0 },
 			defaultSize = 750,
 			size = 750,
-			planets = {};
+			objects = {};
 		
 		function updatePosition() {
 			
@@ -355,13 +398,13 @@ $(function () {
 			
 		}
 		
-		function initiate() {
+		function initiate(solarSystem) {
 			
-//			$this = solarSystem.addDimension(id);
 			size = defaultSize * solarSystem.getScaleFactor();
 			updateSize();
-			this.setPosition(solarSystem.getCenter().x, solarSystem.getCenter().y);
-			// instance et initialisation des planètes
+			
+			position = solarSystem.getCenter();
+			updatePosition();
 			
 		}
 		
@@ -383,6 +426,61 @@ $(function () {
 		this.getDefaultSize = function () { return defaultSize; };
 		this.getSize = function () { return size; };
 		
+		this.addDimension = function (dName) {
+			
+			$this.append('<div class="dimension" id="' + dName + '"><div/>');
+			objects[dName] = new Dimension(dName);
+			
+		};
+		
+		this.addDimensions = function (list) {
+			
+			var i = 0;
+			for (i; i < list.length; i += 1) {
+				
+				this.addDimension(list[i]);
+				
+			}
+			
+		};
+		
+		this.resizeEvent = function (center, scaleFactor) {
+			
+			size = defaultSize * scaleFactor;
+			updateSize();
+			
+			position = center;
+			updatePosition();
+			
+		};
+		
+		this.fadeIn = function () {
+			
+			$this.fadeIn();
+			
+		};
+		
+		this.fadeOut = function () {
+			
+			$this.fadeOut();
+			
+		};
+		
+		this.init = initiate;
+		
+	}
+	
+	function Dimension(dName) {
+		
+		var $this = $(dName),
+			radius = 50,
+			layer = 1,
+			planets = {};
+		
+		function initiate() {}
+		
+		this.fetchData = function (callback) { callback(); };
+		
 		this.fadeIn = function () {
 			
 			$this.fadeIn();
@@ -398,7 +496,6 @@ $(function () {
 		this.fetchData = function (callback) { callback(); };
 		
 		this.init = initiate;
-		this.init();
 		
 	}
 	
@@ -450,6 +547,16 @@ $(function () {
 		this.getDefaultSize = function () { return defaultSize; };
 		this.getSize = function () { return size; };
 		
+		this.resizeEvent = function (center, scaleFactor) {
+			
+			size = defaultSize * scaleFactor;
+			updateSize();
+			
+			position = center;
+			updatePosition();
+			
+		};
+		
 		this.fadeIn = function () {
 			
 			$this.fadeIn();
@@ -473,24 +580,18 @@ $(function () {
 	
 	
 	
-	solarSystem = new SolarSystem();
+	solarSystem = new SolarSystem("system-0");
 	solar = new Solar();
 	
 	solarSystem.init();
 	solarSystem.updateChildren();
 	
-	solarSystem.addDimension();
-	
-	
 	
 	solar.init();
-	solar.fadeIn();	
+	solar.fadeIn();
 	
 	
 	HUD.title.reset();
-	
-	
-	
 	
 	
 	
