@@ -1,10 +1,10 @@
 {
-	
 	"name" : "system-0",
 	
 	"dimensions" : [
 		
-		"dimension-0"
+		"test",
+		"panda"
 		
 	]
 	

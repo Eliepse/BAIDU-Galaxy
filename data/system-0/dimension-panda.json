@@ -1,0 +1,30 @@
+{
+	
+	"rotationSpeed" : 40,
+	"rotationDirection": 1,
+	"radius" : 50,
+	"layer" : 1,
+	
+	"planets" : [
+		
+		{
+			"name": "alpha",
+			"angle": 0,
+			"content": {
+				"title": "alpha",
+				"description": "desc"
+			}
+		},
+		
+		{
+			"name": "beta",
+			"angle": 180,
+			"content": {
+				"title": "beta",
+				"description": "desc"
+			}
+		}
+		
+	]
+	
+}

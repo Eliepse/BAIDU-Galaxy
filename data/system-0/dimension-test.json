@@ -1,6 +1,7 @@
 {
 	
-	"rotationSpeed" : -1,
+	"rotationSpeed" : 10,
+	"rotationDirection": -1,
 	"radius" : 50,
 	"layer" : 1,
 	

@@ -21,16 +21,20 @@ function Iterator(arrayMap) {
 		this.value = value;
 
 	}
-	
+		
 	for (key in arrayMap) {
-
+		
+		console.log(key);
+		
 		if (arrayMap.hasOwnProperty(key)) {
 			values.push(new Entry(key, arrayMap[key]));
 		}
 	}
 
 	length = values.length;
-
+	
+	this.length = length;
+	
 	this.next = function () {
 
 
@@ -309,17 +313,17 @@ $(function () {
 			
 		}
 		
-		function initiate() {
+		function initiate(callback) {
 			
 			updateSize();
 			dimensions.init(this);
-			fetchData();
+			fetchData(callback);
 			
 		}
 		
-		function fetchData() {
+		function fetchData(callback) {
 			
-			HUD.tLog("loading solarSystem data");
+			HUD.tLog("loading " + dirName + " data");
 			
 			$.ajax({
 				
@@ -339,6 +343,12 @@ $(function () {
 					name = data.name;
 					dimensions.addDimensions(data.dimensions);
 					
+					if(callback !== undefined) {
+						
+						callback();
+						
+					}
+					
 				}
 				
 			});
@@ -352,29 +362,123 @@ $(function () {
 			
 		}
 		
-		/*this.addDimension = function () {
-			
-			var i = dimensions.length;
-			$this.append('<div class="dimension" id="dimension-' + i + '"></div>');
-			dimensions.push(new Dimension(i));
-			dimensions[i].fetchData(function () {
-				
-				HUD.tLog("Dimension-" + i + "  loaded");
-				
-			});
-			
-		};*/
-		
 		this.getCenter = function () { return center; };
 		this.getSize = function () { return size; };
 		this.getScaleFactor = function () { return scaleFactor; };
+		this.getName = function () { return name; };
 		
+		this.loadChildren = function () {
+			
+			dimensions.fetchChildren();
+			
+		};
 		this.updateSize = updateSize;
 		this.updateChildren = updateChildren;
 		
 		this.init = initiate;
 		
 	}
+	
+	
+	
+	
+	
+	
+	function Dimension(dName) {
+		
+		var $this = $("#dimension-" + dName),
+			name = dName,
+			rotation = { speed : 25, direction : 0 },
+			radius = 50,
+			layer = 1,
+			planets = {};
+		
+		function initiate() {}
+		
+		this.getName = function () { return name; };
+		
+		function fetchData(callback) {
+			
+			HUD.tLog("loading " + name + " data");
+			
+			console.log("data/" + solarSystem.getName() + "/dimension-" + name + ".json")
+			
+			$.ajax({
+				
+				type: "GET",
+				url: "data/" + solarSystem.getName() + "/dimension-" + name + ".json",
+				dataType: "JSON",
+				error : function (e, f, g) {
+					
+					console.log(g);
+					HUD.log(name + " loadingdata : " + f);
+					
+				},
+				success: function (data) {
+					
+					HUD.log("Data of " + name + " loaded");
+					
+					radius = data.radius;
+					layer = data.layer;
+					rotation.speed = data.rotationSpeed;
+					rotation.direction = data.rotationDirection;
+					
+					$this.css("animation-duration", rotation.speed + "s");
+					
+					if(callback !== undefined) {
+						
+						callback();
+						
+					}
+					
+				}
+				
+			});
+			
+			
+		}
+		
+		this.play = function () {
+			
+			if(rotation.direction === 1) {
+				
+				$this.addClass("clockRotation");
+				
+			} else if (rotation.direction === -1) {
+				
+				$this.addClass("aclockRotation");
+				
+			}
+			
+		};
+		
+		this.pause = function () {
+			
+			$this.removeClass("clockRotation aclockRotation");
+			
+		};
+		
+		this.fetchData = fetchData;
+		
+		this.fadeIn = function () {
+			
+			$this.fadeIn();
+			
+		};
+		
+		this.fadeOut = function () {
+			
+			$this.fadeOut();
+			
+		};
+		
+		this.init = initiate;
+		
+	}
+	
+	
+	
+	
 	
 	function DimensionsInterface() {
 		
@@ -383,7 +487,7 @@ $(function () {
 			offset = { x : 0, y : 0 },
 			defaultSize = 750,
 			size = 750,
-			objects = {};
+			objects = [];
 		
 		function updatePosition() {
 			
@@ -428,8 +532,8 @@ $(function () {
 		
 		this.addDimension = function (dName) {
 			
-			$this.append('<div class="dimension" id="' + dName + '"><div/>');
-			objects[dName] = new Dimension(dName);
+			$this.append('<div class="dimension" id="dimension-' + dName + '"></div>');
+			objects.push(new Dimension(dName));
 			
 		};
 		
@@ -443,6 +547,16 @@ $(function () {
 			}
 			
 		};
+		
+		this.fetchChildren = function () {
+			
+			for( var i = 0; i < objects.length; i++) {
+				
+				objects[i].fetchData();
+				
+			}
+			
+		}
 		
 		this.resizeEvent = function (center, scaleFactor) {
 			
@@ -475,37 +589,7 @@ $(function () {
 	
 	
 	
-	function Dimension(dName) {
-		
-		var $this = $("#" + dName),
-			radius = 50,
-			layer = 1,
-			planets = {};
-		
-//		$this.addClass("clockRotation");
-//		$this.css("animation-duration", "10s");
-		
-		function initiate() {}
-		
-		this.fetchData = function (callback) { callback(); };
-		
-		this.fadeIn = function () {
-			
-			$this.fadeIn();
-			
-		};
-		
-		this.fadeOut = function () {
-			
-			$this.fadeOut();
-			
-		};
-		
-		this.fetchData = function (callback) { callback(); };
-		
-		this.init = initiate;
-		
-	}
+	
 	
 	
 	
@@ -595,16 +679,20 @@ $(function () {
 	
 	solarSystem = new SolarSystem("system-0");
 	solar = new Solar();
-	
-	solarSystem.init();
-	solarSystem.updateChildren();
-	
-	
 	solar.init();
-	solar.fadeIn();
+	
+	solarSystem.init(function () {
+		
+		solarSystem.loadChildren();
+		solarSystem.updateChildren();
+		solar.fadeIn();
+		HUD.title.reset();
+		
+	});
 	
 	
-	HUD.title.reset();
+	
+	
 	
 	
 	
