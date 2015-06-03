@@ -3,6 +3,9 @@
 */
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
+
+
+
 function Iterator(arrayMap) {
 	
 	'use strict';
@@ -135,11 +138,18 @@ function HUD() {
 				
 			}
 			
-		}
+		},
 		
+	};
+			
+	this.tLog = function (val) {
+
+		document.getElementById("tLog").innerHTML = val;
+
 	};
 	
 	this.showDebug = function () {
+	
 		
 		printDebug = true;
 		document.getElementById("debug").style.display = "block";
@@ -224,6 +234,9 @@ function isBlacklistedKey(key) {
 	
 }
 
+
+
+
 var HUD = new HUD();
 var GPU = new GPU();
 var window_reference = { x : 1440, y : 900 };
@@ -236,6 +249,10 @@ HUD.infos.log("GPU", "pause");
 HUD.title.fix = "@ Baidu Galaxy @";
 HUD.title.set("Construction des objects");
 
+
+
+
+
 $(function () {
 	
 	'use strict';
@@ -244,19 +261,6 @@ $(function () {
 	
 	function Planet() {}
 	
-	function Dimension() {
-		
-		var $this,
-			position = { x : 0, y : 0 },
-			offset = { x : 0, y : 0 },
-			defaultSize = 150,
-			size = 150,
-			planets = {};
-		
-		
-		
-		
-	}
 	
 	function SolarSystem() {
 		
@@ -264,7 +268,8 @@ $(function () {
 			size = { x : 0, y : 0 },
 			center = { x : 0, y : 0 },
 			diagonal = 0,
-			scaleFactor = 1;
+			scaleFactor = 1,
+			dimensions = [];
 		
 		function updateSize() {
 			
@@ -294,15 +299,106 @@ $(function () {
 			solar.setPosition(center.x, center.y);
 			solar.setSize(solar.getDefaultSize() * scaleFactor);
 			
+			for (var i=0; i<dimensions.length;i++) {
+				
+				var dim = dimensions[i];
+				dim.setPosition(center.x, center.y);
+				dim.setSize(dim.getDefaultSize() * scaleFactor);
+				
+			}
+			
 		}
+		
+		this.addDimension = function () {
+			
+			var i = dimensions.length;
+			$this.append('<div class="dimension" id="dimension-' + i + '"></div>');
+			dimensions.push(new Dimension(i));
+			dimensions[i].fetchData(function () {
+				
+				HUD.tLog("Dimension-" + i + "  loaded");
+				
+			});
+			
+		};
 		
 		this.getCenter = function () { return center; };
 		this.getSize = function () { return size; };
+		this.getScaleFactor = function () { return scaleFactor; };
 		
 		this.updateSize = updateSize;
 		this.updateChildren = updateChildren;
 		
 		this.init = initiate;
+		
+	}
+	
+	function Dimension(id) {
+		
+		var $this = $('#dimension-' + id),
+			position = { x : 0, y : 0 },
+			offset = { x : 0, y : 0 },
+			defaultSize = 750,
+			size = 750,
+			planets = {};
+		
+		function updatePosition() {
+			
+			$this.css('left', position.x + offset.x + 'px').css('top', position.y + offset.y + 'px');
+			
+		}
+		
+		function updateSize() {
+			
+			offset.x = offset.y = -size / 2;
+			$this.css('width', size + 'px').css('height', size + 'px');
+			
+		}
+		
+		function initiate() {
+			
+//			$this = solarSystem.addDimension(id);
+			size = defaultSize * solarSystem.getScaleFactor();
+			updateSize();
+			this.setPosition(solarSystem.getCenter().x, solarSystem.getCenter().y);
+			// instance et initialisation des planètes
+			
+		}
+		
+		this.setX = function (x) { position.x = x; updatePosition(); };
+		this.setY = function (y) { position.y = y; updatePosition(); };
+		this.setPosition = function (x, y) {
+			
+			position.x = x;
+			position.y = y;
+			updatePosition();
+			
+		};
+		this.setOffsetX = function (x) { offset.x = x; updatePosition(); };
+		this.setOffsetY = function (y) { offset.y = y; updatePosition(); };
+		this.setSize = function (s) { size = s; updateSize(); updatePosition(); };
+		
+		this.getOffset = function () { return offset; };
+		this.getPosition = function () { return position; };
+		this.getDefaultSize = function () { return defaultSize; };
+		this.getSize = function () { return size; };
+		
+		this.fadeIn = function () {
+			
+			$this.fadeIn();
+			
+		};
+		
+		this.fadeOut = function () {
+			
+			$this.fadeOut();
+			
+		};
+		
+		this.fetchData = function (callback) { callback(); };
+		
+		this.init = initiate;
+		this.init();
 		
 	}
 	
@@ -380,12 +476,15 @@ $(function () {
 	solarSystem = new SolarSystem();
 	solar = new Solar();
 	
-	
 	solarSystem.init();
 	solarSystem.updateChildren();
-	solar.init();
-	solar.fadeIn();
 	
+	solarSystem.addDimension();
+	
+	
+	
+	solar.init();
+	solar.fadeIn();	
 	
 	
 	HUD.title.reset();
