@@ -1,0 +1,12 @@
+{
+  "name": "baidu-galaxy",
+  "repository": "git@github.com:Eliepse/BAIDU-Galaxy.git",
+  "author": "Élie Meignan <contact@eliepse.fr>",
+  "license": "Proprietary",
+  "scripts": {
+    "dev": "parcel index.html"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
