@@ -1,4 +1,5 @@
 import $ from "jquery";
+import Dimension from './Dimension';
 
 export default function DimensionsInterface() {
 
@@ -65,24 +66,16 @@ export default function DimensionsInterface() {
         return size;
     };
 
-    this.addDimension = function (dName) {
-        $this.append('<div class="dimension" id="dimension-' + dName + '"></div>');
-        objects.push(new Dimension(dName));
+    this.addDimension = function (name, data) {
+        $this.append('<div class="dimension" id="dimension-' + name + '"></div>');
+        const dimension = new Dimension(name, data);
+        dimension.init();
+        objects.push(dimension);
     };
 
     this.addDimensions = function (list) {
-        let i = 0;
-        for (i; i < list.length; i += 1) {
-            this.addDimension(list[i]);
-        }
+        Object.keys(list).forEach(name => this.addDimension(name, list[name]))
     };
-
-    this.fetchChildren = function (callback) {
-        for (var i = 0; i < objects.length; i++) {
-            if (i == objects.length - 1 && callback !== undefined) objects[i].fetchData(callback);
-            else objects[i].fetchData();
-        }
-    }
 
     this.resizeEvent = function (center, scaleFactor) {
         size = defaultSize * scaleFactor;

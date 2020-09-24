@@ -93,15 +93,11 @@ HUD.title.fix = "@ Baidu Galaxy @";
 HUD.title.set("Construction des objects");
 
 const solarSystem = new SolarSystem("system-0", system);
-const solar = new Solar();
-solar.init();
 
 solarSystem.init(function () {
-    solarSystem.getDimensions().fetchChildren(function () {
-        solarSystem.getDimensions().playAll();
-    });
+    solarSystem.getDimensions().playAll();
     solarSystem.updateChildren();
-    solar.fadeIn();
+    solarSystem.fadeIn();
     HUD.title.reset();
 });
 

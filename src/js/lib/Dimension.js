@@ -38,8 +38,6 @@ export default function Dimension(name, data) {
 
     };
 
-    this.fetchData = fetchData;
-
     this.fadeIn = function () {
         $this.fadeIn();
     };
