@@ -1,13 +1,12 @@
-{
-	
+import bkg from '../../src/img/b.png';
+
+export default {
 	"rotationSpeed" : 60,
 	"rotationDirection": 1,
 	"radius" : 50,
 	"layer" : 1,
-	"bckg" : "src/img/b.png",
-	
+	"bckg" : bkg,
 	"planets" : [
-		
 		{
 			"name": "alpha",
 			"angle": 0,
@@ -16,7 +15,6 @@
 				"description": "desc"
 			}
 		},
-		
 		{
 			"name": "beta",
 			"angle": 180,
@@ -25,7 +23,5 @@
 				"description": "desc"
 			}
 		}
-		
 	]
-	
 }

@@ -1,5 +1,5 @@
-import test from './system-0/dimension-test.json'
-import panda from './system-0/dimension-panda.json'
+import test from './system-0/dimension-test.js'
+import panda from './system-0/dimension-panda.js'
 
 export default {
     "name" : "system-0",
